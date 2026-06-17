@@ -2,8 +2,9 @@
 
 ## Overview
 A technical financial analysis project bridging modern business management principles with data visualization. This interactive dashboard evaluates corporate fundamentals, demonstrating a strong capability to synthesize raw financial data into actionable equity research insights.
+<img width="1920" height="896" alt="Screenshot 2026-06-18 001519" src="https://github.com/user-attachments/assets/899955dc-edaf-4901-92fe-7fc96e3dc667" />
 
-*(Note: Add a screenshot of your dashboard here!)*
+
 
 ## 🚀 Key Features
 * **Interactive UI:** Developed a TradingView-inspired financial dashboard to track Tata Steel's performance using HTML, CSS, and vanilla JavaScript.
