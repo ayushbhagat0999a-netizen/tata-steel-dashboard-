@@ -25,5 +25,5 @@ This is the first iteration of my financial technology portfolio. Future updates
 * Implementing advanced risk-adjusted metrics like XIRR and Sharpe Ratios.
 
 ## 👨‍💻 About the Author
-Built by [Your Name] as a bridge between Business Management studies, CFA Level 1 preparation, and modern Web Development.
-* [Connect with me on LinkedIn](Insert_Your_LinkedIn_Profile_Link_Here)
+Built by Aditya Bhagat as a bridge between Business Management studies, CFA Level 1 preparation, and modern Web Development.
+
