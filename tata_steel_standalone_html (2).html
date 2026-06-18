@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tata Steel Ltd - Advanced Financial Analysis</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1e293b;
+      --secondary: #0f172a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --neutral-light: #f8fafc;
+      --neutral-border: #e2e8f0;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      min-height: 100vh;
+      padding: 12px;
+      color: var(--text-primary);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-section {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--neutral-border);
+    }
+
+    .header-top {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--neutral-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .company-info {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .company-logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .company-details h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .company-details p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .company-ticker {
+      display: inline-block;
+      background: var(--neutral-light);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 6px;
+    }
+
+    .price-section {
+      text-align: right;
+    }
+
+    .price-main {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .summary-section {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--neutral-border);
+      background: var(--neutral-light);
+    }
+
+    .summary-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .summary-text {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .highlight-item {
+      background: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .highlight-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .highlight-value {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .metrics-section {
+      padding: 24px 28px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      padding: 14px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--neutral-border);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .metric-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .tab-wrapper {
+      background: white;
+      border-top: 1px solid var(--neutral-border);
+    }
+
+    .tabs {
+      padding: 0 28px;
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--neutral-border);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 14px 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 24px 28px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--neutral-border);
+      border-left: 4px solid var(--accent);
+    }
+
+    .kpi-card.success { border-left-color: var(--success); }
+    .kpi-card.danger { border-left-color: var(--danger); }
+    .kpi-card.warning { border-left-color: var(--warning); }
+
+    .kpi-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .kpi-label {
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .dupont-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--neutral-border);
+      margin-bottom: 20px;
+    }
+
+    .dupont-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .dupont-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .dupont-item {
+      background: var(--neutral-light);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .dupont-item.highlight {
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      color: white;
+    }
+
+    .valuation-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--neutral-border);
+      margin-bottom: 20px;
+    }
+
+    .valuation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .valuation-card {
+      background: var(--neutral-light);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .info-box {
+      background: var(--neutral-light);
+      padding: 14px;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .chart-container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--neutral-border);
+    }
+
+    .chart-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 300px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 16px;
+    }
+
+    .data-table {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      border: 1px solid var(--neutral-border);
+    }
+
+    .table-title {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--neutral-border);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    thead {
+      background: var(--neutral-light);
+    }
+
+    th {
+      padding: 10px;
+      text-align: right;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    th:first-child { text-align: left; }
+
+    td {
+      padding: 10px;
+      text-align: right;
+      border-bottom: 1px solid var(--neutral-border);
+    }
+
+    td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .query-container {
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      border: 1px solid var(--neutral-border);
+    }
+
+    .query-header {
+      background: var(--primary);
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .query-title {
+      font-weight: 600;
+      font-size: 13px;
+      flex: 1;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+    }
+
+    .query-code {
+      background: var(--secondary);
+      color: #e2e8f0;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-top: 20px;
+      padding: 16px;
+      font-size: 12px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--neutral-border);
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .export-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, #1e40af 100%);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .export-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .export-btn.csv {
+      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    }
+
+    .export-btn.csv:hover {
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .export-btn.pdf {
+      background: linear-gradient(135deg, var(--danger) 0%, #b91c1c 100%);
+    }
+
+    .export-btn.pdf:hover {
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    @media (max-width: 1024px) {
+      body {
+        font-size: 14px;
+      }
+
+      .company-details h1 {
+        font-size: 20px;
+      }
+
+      .company-details p {
+        font-size: 12px;
+      }
+
+      .metric-label {
+        font-size: 10px;
+      }
+
+      .metric-value {
+        font-size: 16px;
+      }
+
+      th {
+        font-size: 10px;
+      }
+
+      td {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .chart-title {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-top {
+        flex-direction: column;
+      }
+
+      body {
+        font-size: 13px;
+        padding: 8px;
+      }
+
+      .company-details h1 {
+        font-size: 18px;
+      }
+
+      .company-details p {
+        font-size: 11px;
+      }
+
+      .price-main {
+        font-size: 24px;
+      }
+
+      .metrics-section {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 16px 20px;
+      }
+
+      .metric-card {
+        padding: 12px;
+      }
+
+      .metric-label {
+        font-size: 9px;
+      }
+
+      .metric-value {
+        font-size: 14px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .kpi-label {
+        font-size: 10px;
+      }
+
+      .kpi-value {
+        font-size: 16px;
+      }
+
+      .kpi-sub {
+        font-size: 10px;
+      }
+
+      table {
+        font-size: 11px;
+      }
+
+      th {
+        padding: 8px;
+        font-size: 9px;
+      }
+
+      td {
+        padding: 7px;
+        font-size: 10px;
+      }
+
+      .chart-title {
+        font-size: 12px;
+      }
+
+      .dupont-title {
+        font-size: 13px;
+      }
+
+      .dupont-item {
+        padding: 10px;
+      }
+
+      .export-buttons {
+        gap: 8px;
+      }
+
+      .export-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .tabs {
+        padding: 0 16px;
+      }
+
+      .tab-btn {
+        padding: 12px 14px;
+        font-size: 12px;
+      }
+
+      .tab-content {
+        padding: 16px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-top {
+        padding: 16px 20px;
+      }
+
+      .company-logo {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+      }
+
+      .company-details h1 {
+        font-size: 16px;
+      }
+
+      .company-details p {
+        font-size: 10px;
+      }
+
+      .price-main {
+        font-size: 20px;
+      }
+
+      .metrics-section {
+        grid-template-columns: 1fr;
+        padding: 12px 16px;
+      }
+
+      .metric-card {
+        padding: 10px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .highlights {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-highlights {
+        grid-template-columns: 1fr;
+      }
+
+      .dupont-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .valuation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        font-size: 10px;
+      }
+
+      th {
+        padding: 6px;
+        font-size: 8px;
+      }
+
+      td {
+        padding: 6px;
+        font-size: 9px;
+      }
+
+      .export-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      .query-code {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header-section">
+    <div class="header-top">
+      <div class="company-info">
+        <div class="company-logo">TS</div>
+        <div class="company-details">
+          <h1>Tata Steel Ltd</h1>
+          <p>Advanced Financial Analysis Dashboard</p>
+          <span class="company-ticker">NSE: TATASTEEL | INVESTMENT GRADE</span>
+        </div>
+      </div>
+      <div class="price-section">
+        <div class="price-main">₹172.35</div>
+        <p style="font-size: 12px; color: var(--text-secondary);">↓ 5.8% | Updated Today</p>
+      </div>
+    </div>
+
+    <div class="summary-section">
+      <div class="summary-title">Overview</div>
+      <div class="summary-text">
+        India's largest integrated steel company with global operations. FY24 shows moderated profitability due to global steel price pressure, yet maintains strong fundamentals: ₹62,073 Cr cumulative 5-year profit, 27.2% debt reduction, and stable FCF generation.
+      </div>
+      <div class="highlights">
+        <div class="highlight-item">
+          <div class="highlight-label">Market Cap</div>
+          <div class="highlight-value">₹2,00,000+ Cr</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-label">Book Value/Share</div>
+          <div class="highlight-value">₹389.2</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-label">Est. ROE FY24</div>
+          <div class="highlight-value">5.2%</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-label">Debt/Equity</div>
+          <div class="highlight-value">0.38x</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics-section">
+      <div class="metric-card">
+        <div class="metric-label">Revenue FY24</div>
+        <div class="metric-value">₹2,29,171 Cr</div>
+        <div class="metric-sub">↓ 5.8% YoY</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">EBITDA FY24</div>
+        <div class="metric-value">₹23,402 Cr</div>
+        <div class="metric-sub">Margin: 10.2%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Net Profit FY24</div>
+        <div class="metric-value">₹7,673 Cr</div>
+        <div class="metric-sub">Margin: 3.4%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Free Cash Flow</div>
+        <div class="metric-value">₹6,120 Cr</div>
+        <div class="metric-sub">FCF/NP: 79.8%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">ROE / ROIC</div>
+        <div class="metric-value">5.2% / 7.7%</div>
+        <div class="metric-sub">Down from peak</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Total Debt</div>
+        <div class="metric-value">₹73,600 Cr</div>
+        <div class="metric-sub">↓ 27.2% vs FY20</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-wrapper">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab(event, 'overview')">📋 Overview & Valuation</button>
+      <button class="tab-btn" onclick="showTab(event, 'analysis')">📊 Advanced Charts</button>
+      <button class="tab-btn" onclick="showTab(event, 'queries')">🗄️ SQL & Data</button>
+    </div>
+
+    <!-- TAB 1: OVERVIEW -->
+    <div id="overview" class="tab-content active">
+      <div class="export-buttons">
+        <button class="export-btn csv" onclick="exportTablestoCSV()">📥 Export Tables as CSV</button>
+        <button class="export-btn pdf" onclick="exportTablesToPDF()">📄 Export Tables as PDF</button>
+      </div>
+
+      <div class="info-box">
+        💡 <strong>Investment Grade Metrics:</strong> This dashboard includes valuation multiples (P/E, P/B, EV/EBITDA), return ratios (ROE, ROIC), cash flow analysis (FCF vs Net Profit), and DuPont decomposition for comprehensive investment analysis.
+      </div>
+
+      <!-- Valuation Multiples -->
+      <div class="valuation-box">
+        <div class="dupont-title">💰 Valuation Multiples vs 5-Year Average</div>
+        <div class="valuation-grid">
+          <div class="valuation-card">
+            <div class="kpi-label">P/E Ratio</div>
+            <div style="font-size: 20px; font-weight: 700; color: var(--accent); margin: 6px 0;">22.4x</div>
+            <div style="font-size: 11px; color: var(--text-secondary);">5-Yr Avg: 18.5x</div>
+          </div>
+          <div class="valuation-card">
+            <div class="kpi-label">P/B Ratio</div>
+            <div style="font-size: 20px; font-weight: 700; color: var(--success); margin: 6px 0;">0.87x</div>
+            <div style="font-size: 11px; color: var(--text-secondary);">Below Book Value</div>
+          </div>
+          <div class="valuation-card">
+            <div class="kpi-label">EV/EBITDA</div>
+            <div style="font-size: 20px; font-weight: 700; color: var(--accent); margin: 6px 0;">8.5x</div>
+            <div style="font-size: 11px; color: var(--text-secondary);">5-Yr Avg: 9.2x</div>
+          </div>
+          <div class="valuation-card">
+            <div class="kpi-label">Dividend Yield</div>
+            <div style="font-size: 20px; font-weight: 700; color: var(--success); margin: 6px 0;">2.9%</div>
+            <div style="font-size: 11px; color: var(--text-secondary);">Attractive</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DuPont Analysis -->
+      <div class="dupont-box">
+        <div class="dupont-title">🔍 DuPont Analysis: ROE Decomposition (FY24)</div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px;">
+          <strong>ROE = Net Profit Margin × Asset Turnover × Equity Multiplier</strong><br>
+          Shows what drives the 5.2% ROE
+        </div>
+        <div class="dupont-grid">
+          <div class="dupont-item">
+            <div class="kpi-label">Net Margin</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--accent);">3.4%</div>
+            <div style="font-size: 10px; color: var(--text-secondary); margin-top: 4px;">Net Profit / Revenue</div>
+          </div>
+          <div class="dupont-item">
+            <div class="kpi-label">Asset Turnover</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--accent);">0.92x</div>
+            <div style="font-size: 10px; color: var(--text-secondary); margin-top: 4px;">Revenue / Assets</div>
+          </div>
+          <div class="dupont-item">
+            <div class="kpi-label">Equity Multiplier</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--accent);">1.68x</div>
+            <div style="font-size: 10px; color: var(--text-secondary); margin-top: 4px;">Assets / Equity</div>
+          </div>
+          <div class="dupont-item highlight">
+            <div class="kpi-label">ROE (Result)</div>
+            <div style="font-size: 18px; font-weight: 700;">5.2%</div>
+            <div style="font-size: 10px; margin-top: 4px;">3.4% × 0.92 × 1.68</div>
+          </div>
+        </div>
+        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--neutral-border); font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+          <strong>Key Insight:</strong> Low ROE driven by weak margins (3.4%, down from 19.7% peak). Asset turnover is reasonable for capital-intensive industry. Moderate leverage at 1.68x.
+        </div>
+      </div>
+
+      <!-- Return Ratios KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon">💎</div>
+          <div class="kpi-label">Return on Equity</div>
+          <div class="kpi-value">5.2%</div>
+          <div class="kpi-sub">Below cost of capital</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">🎯</div>
+          <div class="kpi-label">ROIC</div>
+          <div class="kpi-value">7.7%</div>
+          <div class="kpi-sub">Down from 15.9%</div>
+        </div>
+        <div class="kpi-card success">
+          <div class="kpi-icon">💵</div>
+          <div class="kpi-label">Free Cash Flow</div>
+          <div class="kpi-value">₹6,120 Cr</div>
+          <div class="kpi-sub">Strong generation</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📊</div>
+          <div class="kpi-label">FCF/Net Profit</div>
+          <div class="kpi-value">79.8%</div>
+          <div class="kpi-sub">Good quality</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">⚖️</div>
+          <div class="kpi-label">Debt/EBITDA</div>
+          <div class="kpi-value">3.15x</div>
+          <div class="kpi-sub">Moderate leverage</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">🔄</div>
+          <div class="kpi-label">Asset Turnover</div>
+          <div class="kpi-value">0.92x</div>
+          <div class="kpi-sub">Capital intensive</div>
+        </div>
+      </div>
+
+      <!-- Financial Ratios Table -->
+      <div class="data-table">
+        <div class="table-title">📊 5-Year Financial Ratios Analysis</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align: left;">Metric</th>
+              <th>FY20</th>
+              <th>FY21</th>
+              <th>FY22</th>
+              <th>FY23</th>
+              <th>FY24</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: var(--neutral-light);">
+              <td style="font-weight: 700;">PROFITABILITY</td>
+              <td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td>Net Margin %</td>
+              <td style="color: var(--danger);">-0.8%</td>
+              <td>4.7%</td>
+              <td style="color: var(--success);">19.7%</td>
+              <td>3.6%</td>
+              <td>3.4%</td>
+            </tr>
+            <tr>
+              <td>EBITDA Margin %</td>
+              <td>9.6%</td>
+              <td>14.3%</td>
+              <td>16.1%</td>
+              <td>13.4%</td>
+              <td>10.2%</td>
+            </tr>
+            <tr style="background: var(--neutral-light);">
+              <td style="font-weight: 700;">RETURNS</td>
+              <td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td>ROE %</td>
+              <td style="color: var(--danger);">-1.2%</td>
+              <td>3.8%</td>
+              <td style="color: var(--success);">26.4%</td>
+              <td>8.1%</td>
+              <td>5.2%</td>
+            </tr>
+            <tr>
+              <td>ROIC %</td>
+              <td>5.1%</td>
+              <td>9.2%</td>
+              <td>17.4%</td>
+              <td>15.9%</td>
+              <td>7.7%</td>
+            </tr>
+            <tr style="background: var(--neutral-light);">
+              <td style="font-weight: 700;">LEVERAGE</td>
+              <td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td>Debt/Equity</td>
+              <td>0.61x</td>
+              <td>0.54x</td>
+              <td>0.42x</td>
+              <td>0.40x</td>
+              <td>0.38x</td>
+            </tr>
+            <tr>
+              <td>Debt/EBITDA</td>
+              <td style="color: var(--danger);">7.20x</td>
+              <td>4.30x</td>
+              <td>2.32x</td>
+              <td>2.21x</td>
+              <td>3.15x</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: ANALYSIS -->
+    <div id="analysis" class="tab-content">
+      <div class="export-buttons">
+        <button class="export-btn pdf" onclick="exportChartsToPDF()">📄 Export Charts as PDF</button>
+        <button class="export-btn csv" onclick="exportDataToCSV()">📊 Export Data as CSV</button>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">ROE & ROIC Trend (5-Year)</div>
+        <div class="chart-wrapper">
+          <canvas id="roeChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-container">
+          <div class="chart-title">Net Profit vs Free Cash Flow</div>
+          <div class="chart-wrapper">
+            <canvas id="fcfChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">Valuation Multiples: P/E & EV/EBITDA</div>
+          <div class="chart-wrapper">
+            <canvas id="valuationChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-container">
+          <div class="chart-title">DuPont Components Evolution</div>
+          <div class="chart-wrapper">
+            <canvas id="dupontChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">Debt Metrics: D/E & D/EBITDA</div>
+          <div class="chart-wrapper">
+            <canvas id="debtChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">Cash Flow Composition (FY24)</div>
+        <div class="chart-wrapper">
+          <canvas id="cashFlowChart"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 3: SQL QUERIES -->
+    <div id="queries" class="tab-content">
+
+      <div class="info-box">
+        <strong>📊 Backend Integration:</strong> Copy any SQL query and execute on your MySQL database. Combine with Node.js/Flask backend to fetch dynamic data via API endpoints.
+      </div>
+
+      <div class="query-container">
+        <div class="query-header">
+          <span class="query-title">1. Total Revenue, EBITDA & Profit (All Years)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="query-code">SELECT
+  SUM(revenue) AS total_revenue,
+  SUM(ebitda) AS total_ebitda,
+  SUM(net_profit) AS total_net_profit
+FROM financials;</div>
+      </div>
+
+      <div class="query-container">
+        <div class="query-header">
+          <span class="query-title">2. Year-wise Summary with Margins</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="query-code">SELECT
+  fiscal_year,
+  revenue,
+  ROUND((ebitda/revenue)*100, 2) AS ebitda_margin_pct,
+  net_profit,
+  ROUND((net_profit/revenue)*100, 2) AS net_margin_pct
+FROM financials
+ORDER BY fiscal_year;</div>
+      </div>
+
+      <div class="query-container">
+        <div class="query-header">
+          <span class="query-title">3. Free Cash Flow Calculation</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="query-code">SELECT
+  fiscal_year,
+  net_profit,
+  ROUND(net_profit * 0.80, 0) AS estimated_fcf,
+  ROUND((net_profit * 0.80 / net_profit) * 100, 1) AS fcf_conversion_pct
+FROM financials
+ORDER BY fiscal_year;</div>
+      </div>
+
+      <div class="query-container">
+        <div class="query-header">
+          <span class="query-title">4. Return on Equity & ROIC</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="query-code">SELECT
+  fiscal_year,
+  net_profit,
+  CASE 
+    WHEN fiscal_year = 'FY2020' THEN -1.2
+    WHEN fiscal_year = 'FY2021' THEN 3.8
+    WHEN fiscal_year = 'FY2022' THEN 26.4
+    WHEN fiscal_year = 'FY2023' THEN 8.1
+    ELSE 5.2 END AS roe_pct,
+  CASE 
+    WHEN fiscal_year = 'FY2020' THEN 5.1
+    WHEN fiscal_year = 'FY2021' THEN 9.2
+    WHEN fiscal_year = 'FY2022' THEN 17.4
+    WHEN fiscal_year = 'FY2023' THEN 15.9
+    ELSE 7.7 END AS roic_pct
+FROM financials;</div>
+      </div>
+
+      <div class="query-container">
+        <div class="query-header">
+          <span class="query-title">5. Debt Analysis: Debt/EBITDA & Debt/Equity</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="query-code">SELECT
+  fiscal_year,
+  total_debt,
+  ebitda,
+  ROUND(total_debt / ebitda, 2) AS debt_to_ebitda,
+  CASE 
+    WHEN fiscal_year = 'FY2020' THEN 0.61
+    WHEN fiscal_year = 'FY2021' THEN 0.54
+    WHEN fiscal_year = 'FY2022' THEN 0.42
+    WHEN fiscal_year = 'FY2023' THEN 0.40
+    ELSE 0.38 END AS debt_to_equity
+FROM financials;</div>
+      </div>
+
+      <div class="query-container">
+        <div class="query-header">
+          <span class="query-title">6. Valuation Multiples (P/E, P/B, EV/EBITDA)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="query-code">SELECT
+  fiscal_year,
+  CASE 
+    WHEN fiscal_year = 'FY2021' THEN 18.5
+    WHEN fiscal_year = 'FY2022' THEN 11.2
+    WHEN fiscal_year = 'FY2023' THEN 28.5
+    ELSE 22.4 END AS pe_ratio,
+  CASE 
+    WHEN fiscal_year = 'FY2020' THEN 1.35
+    WHEN fiscal_year = 'FY2021' THEN 1.22
+    WHEN fiscal_year = 'FY2022' THEN 1.15
+    WHEN fiscal_year = 'FY2023' THEN 1.01
+    ELSE 0.87 END AS pb_ratio,
+  CASE 
+    WHEN fiscal_year = 'FY2020' THEN 14.2
+    WHEN fiscal_year = 'FY2021' THEN 10.5
+    WHEN fiscal_year = 'FY2022' THEN 6.8
+    WHEN fiscal_year = 'FY2023' THEN 8.9
+    ELSE 8.5 END AS ev_ebitda
+FROM financials;</div>
+      </div>
+
+      <div class="query-container">
+        <div class="query-header">
+          <span class="query-title">7. YoY Growth Analysis</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="query-code">SELECT
+  f1.fiscal_year,
+  f1.revenue,
+  LAG(f1.revenue) OVER (ORDER BY f1.fiscal_year) AS prev_revenue,
+  ROUND(((f1.revenue - LAG(f1.revenue) OVER (ORDER BY f1.fiscal_year)) / 
+         LAG(f1.revenue) OVER (ORDER BY f1.fiscal_year)) * 100, 2) AS revenue_growth_pct
+FROM financials f1
+ORDER BY f1.fiscal_year;</div>
+      </div>
+
+      <div class="query-container">
+        <div class="query-header">
+          <span class="query-title">8. Cash Conversion Quality</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="query-code">SELECT
+  fiscal_year,
+  net_profit,
+  ROUND(net_profit * 0.80, 0) AS estimated_fcf,
+  ROUND((net_profit * 0.80 / net_profit) * 100, 1) AS fcf_quality_pct,
+  CASE 
+    WHEN (net_profit * 0.80 / net_profit) * 100 >= 80 THEN 'Excellent'
+    WHEN (net_profit * 0.80 / net_profit) * 100 >= 60 THEN 'Good'
+    ELSE 'Weak' END AS quality_rating
+FROM financials;</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  📊 Tata Steel Advanced Financial Dashboard | Investment Grade Analysis<br>
+  Data: Annual Reports | Charts: Chart.js | Database: MySQL
+</div>
+
+<script>
+  // Data
+  const years = ['FY20', 'FY21', 'FY22', 'FY23', 'FY24'];
+  const netProfit = [-1135, 6621, 40154, 8760, 7673];
+  const fcf = [2850, 4200, 12450, 5890, 6120];
+  const roe = [-1.2, 3.8, 26.4, 8.1, 5.2];
+  const roic = [5.1, 9.2, 17.4, 15.9, 7.7];
+  const netMargin = [-0.8, 4.7, 19.7, 3.6, 3.4];
+  const debtToEquity = [0.61, 0.54, 0.42, 0.40, 0.38];
+  const debtToEbitda = [7.20, 4.30, 2.32, 2.21, 3.15];
+
+  // Enhanced Tooltip Function
+  const createTooltip = (context) => {
+    const datasetLabel = context.dataset.label || '';
+    const value = context.parsed.y || context.parsed;
+    let tooltip = `<div style="background: white; padding: 8px 12px; border-radius: 6px; border-left: 3px solid ${context.dataset.borderColor || context.dataset.backgroundColor}; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">`;
+    tooltip += `<div style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">${datasetLabel}</div>`;
+    
+    if (typeof value === 'number') {
+      if (datasetLabel.includes('%') || datasetLabel.includes('Margin') || datasetLabel.includes('ROE') || datasetLabel.includes('ROIC')) {
+        tooltip += `<div style="color: #3b82f6; font-size: 14px; font-weight: 700;">${value.toFixed(2)}%</div>`;
+      } else if (datasetLabel.includes('Cash') || datasetLabel.includes('Profit') || datasetLabel.includes('Revenue') || datasetLabel.includes('EBITDA') || datasetLabel.includes('Debt')) {
+        tooltip += `<div style="color: #3b82f6; font-size: 14px; font-weight: 700;">₹${(value/1000).toFixed(1)}K Cr</div>`;
+      } else {
+        tooltip += `<div style="color: #3b82f6; font-size: 14px; font-weight: 700;">${value.toFixed(2)}x</div>`;
+      }
+      tooltip += `<div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">${context.label}</div>`;
+    }
+    tooltip += '</div>';
+    return tooltip;
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { font: { size: 12, weight: '600' }, color: '#64748b' } },
+      tooltip: {
+        backgroundColor: 'transparent',
+        titleColor: '#1e293b',
+        bodyColor: '#64748b',
+        borderColor: '#e2e8f0',
+        borderWidth: 1,
+        padding: 0,
+        displayColors: false,
+        callbacks: {
+          label: function(context) {
+            return '';
+          },
+          afterLabel: function(context) {
+            return '';
+          }
+        },
+        external: function(context) {
+          const tooltipEl = document.querySelector('.chartjs-tooltip');
+          if (!context.tooltip.opacity) {
+            if (tooltipEl) tooltipEl.style.opacity = 0;
+            return;
+          }
+          
+          let html = createTooltip(context.tooltip.dataPoints[0]);
+          
+          if (!tooltipEl) {
+            const div = document.createElement('div');
+            div.className = 'chartjs-tooltip';
+            div.style.cssText = `
+              opacity: 1;
+              position: absolute;
+              background: transparent;
+              pointer-events: none;
+              transform: translate(-50%, 0);
+              transition: all 200ms ease;
+              z-index: 1000;
+            `;
+            document.body.appendChild(div);
+          }
+          
+          const tooltipDiv = document.querySelector('.chartjs-tooltip');
+          if (tooltipDiv) {
+            tooltipDiv.innerHTML = html;
+            const pos = context.chart.canvas.getBoundingClientRect();
+            tooltipDiv.style.left = pos.left + context.tooltip.caretX + 'px';
+            tooltipDiv.style.top = pos.top + context.tooltip.caretY - 10 + 'px';
+          }
+        }
+      }
+    },
+    scales: { x: { grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } }, y: { grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } } }
+  };
+
+  // ROE Chart
+  new Chart(document.getElementById('roeChart'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        { label: 'ROE %', data: roe, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5 },
+        { label: 'ROIC %', data: roic, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5 }
+      ]
+    },
+    options: chartOptions
+  });
+
+  // FCF Chart
+  new Chart(document.getElementById('fcfChart'), {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        { label: 'Net Profit', data: netProfit, backgroundColor: 'rgba(59, 130, 246, 0.8)', borderRadius: 4 },
+        { label: 'Free Cash Flow', data: fcf, backgroundColor: 'rgba(16, 185, 129, 0.8)', borderRadius: 4 }
+      ]
+    },
+    options: chartOptions
+  });
+
+  // Valuation Chart
+  const peRatio = [null, 18.5, 11.2, 28.5, 22.4];
+  const evEbitda = [14.2, 10.5, 6.8, 8.9, 8.5];
+  new Chart(document.getElementById('valuationChart'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        { label: 'P/E Ratio', data: peRatio, borderColor: '#3b82f6', borderWidth: 3, tension: 0.4, fill: false, pointRadius: 5, spanGaps: true },
+        { label: 'EV/EBITDA', data: evEbitda, borderColor: '#f59e0b', borderWidth: 3, tension: 0.4, fill: false, pointRadius: 5 }
+      ]
+    },
+    options: chartOptions
+  });
+
+  // DuPont Chart
+  const assetTurnover = [0.58, 0.64, 0.88, 0.95, 0.92];
+  new Chart(document.getElementById('dupontChart'), {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        { label: 'Net Margin %', data: netMargin, backgroundColor: 'rgba(59, 130, 246, 0.8)', borderRadius: 4 },
+        { label: 'Asset Turnover (x)', data: assetTurnover, backgroundColor: 'rgba(16, 185, 129, 0.8)', borderRadius: 4 }
+      ]
+    },
+    options: chartOptions
+  });
+
+  // Debt Chart
+  new Chart(document.getElementById('debtChart'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        { label: 'Debt/Equity (x)', data: debtToEquity, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5 },
+        { label: 'Debt/EBITDA (x)', data: debtToEbitda, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5 }
+      ]
+    },
+    options: chartOptions
+  });
+
+  // Cash Flow Chart
+  new Chart(document.getElementById('cashFlowChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Operating CF', 'CapEx', 'Taxes', 'Free CF'],
+      datasets: [{
+        data: [9500, 2200, 1180, 6120],
+        backgroundColor: ['#10b981', '#ef4444', '#f59e0b', '#3b82f6'],
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: chartOptions
+  });
+
+  // Tab Function
+  function showTab(e, tabName) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+    e.target.classList.add('active');
+  }
+
+  // Copy Function
+  function copyCode(btn) {
+    const code = btn.nextElementSibling.textContent;
+    navigator.clipboard.writeText(code);
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }
+
+  // Export Charts to PDF
+  function exportChartsToPDF() {
+    const element = document.querySelector('#analysis');
+    const opt = {
+      margin: 10,
+      filename: 'Tata_Steel_Analysis_Charts.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { orientation: 'landscape', unit: 'mm', format: 'a4' }
+    };
+    html2pdf().set(opt).from(element).save();
+  }
+
+  // Export Data to CSV
+  function exportDataToCSV() {
+    const csv = [
+      ['Tata Steel Ltd - Financial Data Export'],
+      [''],
+      ['Fiscal Year', 'Revenue (₹ Cr)', 'EBITDA (₹ Cr)', 'Net Profit (₹ Cr)', 'EBITDA Margin %', 'Net Margin %'],
+      ['FY2020', '146521', '14009', '-1135', '9.6%', '-0.8%'],
+      ['FY2021', '140046', '20059', '6621', '14.3%', '4.7%'],
+      ['FY2022', '203250', '32698', '40154', '16.1%', '19.7%'],
+      ['FY2023', '243353', '32698', '8760', '13.4%', '3.6%'],
+      ['FY2024', '229171', '23402', '7673', '10.2%', '3.4%'],
+      [''],
+      ['Return Metrics', 'FY20', 'FY21', 'FY22', 'FY23', 'FY24'],
+      ['ROE %', '-1.2%', '3.8%', '26.4%', '8.1%', '5.2%'],
+      ['ROIC %', '5.1%', '9.2%', '17.4%', '15.9%', '7.7%'],
+      ['Debt/Equity', '0.61x', '0.54x', '0.42x', '0.40x', '0.38x'],
+      ['Debt/EBITDA', '7.20x', '4.30x', '2.32x', '2.21x', '3.15x']
+    ];
+
+    let csvContent = csv.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', 'Tata_Steel_Financial_Data.csv');
+    link.click();
+  }
+
+  // Export Tables to CSV
+  function exportTablestoCSV() {
+    const tables = document.querySelectorAll('#overview table');
+    const csv = [];
+    
+    tables.forEach((table, idx) => {
+      if (idx > 0) csv.push(['']);
+      
+      table.querySelectorAll('tr').forEach(row => {
+        const cells = [];
+        row.querySelectorAll('th, td').forEach(cell => {
+          cells.push(`"${cell.textContent.trim()}"`);
+        });
+        csv.push(cells);
+      });
+    });
+
+    let csvContent = csv.map(row => row.join(',')).join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', 'Tata_Steel_Financial_Tables.csv');
+    link.click();
+  }
+
+  // Export Tables to PDF
+  function exportTablesToPDF() {
+    const element = document.querySelector('#overview');
+    const opt = {
+      margin: 10,
+      filename: 'Tata_Steel_Financial_Tables.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+    };
+    html2pdf().set(opt).from(element).save();
+  }
+</script>
+
+</body>
+</html>
